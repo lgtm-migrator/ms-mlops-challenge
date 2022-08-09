@@ -27,10 +27,10 @@ def main(args):
 def get_csvs_df(path):
     if not os.path.exists(path):
         raise RuntimeError(f"Cannot use non-existent path provided: {path}")
-    csv_files = glob.glob(f"{path}/*.csv")
-    if not csv_files:
+    if csv_files := glob.glob(f"{path}/*.csv"):
+        return pd.concat((pd.read_csv(f) for f in csv_files), sort=False)
+    else:
         raise RuntimeError(f"No CSV files found in provided data path: {path}")
-    return pd.concat((pd.read_csv(f) for f in csv_files), sort=False)
 
 
 # TO DO: add function to split data
@@ -51,11 +51,8 @@ def parse_args():
     parser.add_argument("--reg_rate", dest='reg_rate',
                         type=float, default=0.01)
 
-    # parse args
-    args = parser.parse_args()
-
     # return args
-    return args
+    return parser.parse_args()
 
 # run script
 if __name__ == "__main__":
